@@ -1,4 +1,4 @@
-# LPG-Gas_Detector# Fire Sensor Alarm Project
+# LPG-Gas_Detector
 
 This repository contains the code and resources for a Fire Sensor Alarm project that utilizes a flame sensor and Arduino to detect potential fire incidents and trigger an alarm.
 
@@ -21,11 +21,13 @@ The Fire Sensor Alarm project is designed to detect the presence of flames and u
 | Name   | Quantity | Component                |
 |--------|----------|--------------------------|
 | U1     | 1        | Arduino Uno R3           |
-| PIEZO1 | 1        | Piezo                    |
+| PIEZO1 | 1        | Piezo Burzer             |
 | D1     | 1        | Red LED                  |
 | D2     | 1        | Green LED                |
 | R1, R2 | 2        | 1 kΩ Resistor            |
-| U2     | 1        | Temperature Sensor [TMP36]/Flame Sensor|
+| Exhaust Fan | 2   | 5v , 1.8 watt            |
+| R1, R2 | 2        | 1 kΩ Resistor            |
+| U2     | 1        | MQ6 Gas Sensor           |
 
 
 ## Demo
@@ -38,25 +40,131 @@ The Fire Sensor Alarm project is designed to detect the presence of flames and u
 
 Also look upon: [Schematic View](https://github.com/adityakanu/Fire-Alarm-Sensor/blob/0805cbb021270aadbb464f752a95485cd2f7fbc1/Fire%20Sensing%20Alarm.pdf)
 
+Circuit Connection Steps:
+
+1. Power Supply to Arduino
+
+Connect the 9V battery's positive terminal to the Vin pin of the Arduino.
+
+Connect the negative terminal to the GND pin of the Arduino.
+
+
+
+2. Gas Sensor (MQ-2)
+
+VCC of the gas sensor to 5V on Arduino.
+
+GND of the gas sensor to GND on Arduino.
+
+Digital output (DO) of the gas sensor to pin 8 on Arduino.
+
+
+
+3. Buzzer
+
+Positive terminal of the buzzer to pin 8 on Arduino.
+
+Negative terminal of the buzzer to GND.
+
+
+
+4. Fan Control
+
+Connect the positive terminal of the fan to the NO (Normally Open) pin of the relay module.
+
+Connect the negative terminal of the fan to the negative terminal of the 9V battery.
+
+Connect the positive terminal of the 9V battery to the COM (Common) pin of the relay module.
+
+
+
+5. Relay Module
+
+VCC of the relay to 5V on Arduino.
+
+GND of the relay to GND on Arduino.
+
+IN pin of the relay to pin 9 on Arduino.
+
+
+
+6. Motor Control
+
+Connect the motor's positive terminal to the relay's NO pin.
+
+Connect the motor's negative terminal to the negative terminal of another 9V battery.
+
+Connect the positive terminal of the second 9V battery to the COM pin of the relay.
+
+
+
+7. Switch
+
+Connect the switch to break the positive line between the 9V battery and the Arduino for manual control.
+
+
+
+
+These steps correspond to the provided diagram. Let me know if you need additional clarification!
+
 ## Circuit Description:
+Overall System Functionality:
 
-1. The flame sensor (PIEZO1) is connected to one of the analog input pins of the Arduino Uno (A0, for example). The analog voltage output from the flame sensor is read by the Arduino to detect the presence of a flame.
+1. Input Detection (Gas Sensor - MQ-2):
 
-2. The red LED (D1) is connected to a digital output pin of the Arduino (such as D3). When the flame sensor detects a flame, the Arduino sends a signal to illuminate the red LED, indicating that the fire alarm has been triggered.
+The gas sensor continuously monitors the environment for gas leakage.
 
-3. The green LED (D2) is connected to another digital output pin of the Arduino (e.g., D4). The green LED remains on under normal conditions. When the alarm is triggered, the Arduino turns off the green LED.
+If the gas concentration exceeds the set threshold, it sends a HIGH signal to Arduino through Digital Output (DO).
 
-4. The 1 kΩ resistors (R1, R2) are connected in series with the LEDs to limit the current passing through them and prevent excessive current flow.
 
-5. The temperature sensor (U2) is used to monitor the ambient temperature. The Arduino can analyze temperature changes in conjunction with flame sensor data to enhance the accuracy of fire detection.
 
-This circuit is designed to provide a basic fire-sensing alarm system using a flame sensor and Arduino. When the flame sensor detects a flame, the red LED lights up, and the green LED turns off, alerting users to the potential presence of a fire.
+2. Alarm Activation (Buzzer):
+
+When the gas sensor detects leakage, Arduino triggers the buzzer connected to pin 8.
+
+The buzzer produces a sound to alert users about the gas leak.
+
+
+
+3. Ventilation System (Fan Control via Relay):
+
+Arduino activates the relay module connected to pin 9, which powers the fan.
+
+The fan helps in ventilating the area by removing leaked gas.
+
+
+
+4. Safety Shutdown (Motor Control via Relay):
+
+The motor (valve control) can be used to shut off the gas supply by closing the valve if leakage is detected.
+
+Arduino triggers this action through the relay module connected to the motor.
+
+
+
+5. Manual Control (Switch):
+
+A manual switch allows users to disconnect power to the system for maintenance or emergency shutdown.
+
+
+
+6. Power Supply:
+
+The system operates using 9V batteries for both the Arduino and external devices like the motor and fan.
+
+
+
+
+Final Purpose:
+
+This system is designed for gas leakage detection and safety management by activating alarms, improving ventilation, and optionally shutting off gas flow, ensuring safety in residential or industrial environments.
+
 
 Overall System Functionality:
- - The flame sensor serves as the primary input to the system, detecting the presence of a flame or fire.
- - The Arduino processes the flame sensor's signal and determines whether a fire hazard is present.
- - The system responds by illuminating the red LED to provide a visual fire alarm indicator and activating the piezo buzzer to sound an audible alarm, effectively notifying users of the potential fire threat.
-
+This project detects LPG gas leaks and ensures safety by activating necessary countermeasures.
+• The MQ6 sensor detects LPG or its composition in the air, triggering a buzzer for alerting.
+• Automatically cuts off the house’s electric connection and starts the exhaust fan to remove the leaked gas.
+• Sensors/instruments/tools: MQ6 sensor, buzzer, relay module, exhaust fan, Arduino .
 ## Simulation
 
 You can simulate the Fire Sensor Alarm project using [Tinkercad](https://www.tinkercad.com/). Click [here](https://www.tinkercad.com/things/1iVVr0knjMJ) to access the simulation.
@@ -66,41 +174,8 @@ You can simulate the Fire Sensor Alarm project using [Tinkercad](https://www.tin
 
 Note: We have used only the temperature sensor as the Flame Sensor module is not available on Tinkercad. But the Flame Sensor is shown in the [demo](#demo).
 
-## Setup Instructions
 
-Follow these steps to set up and run the Fire Sensor Alarm project:
 
-1. Hardware Connections and Initial Setup:
-   - Connect the flame sensor (U2) to a digital pin (e.g., D2) on the Arduino (U1).
-   - Connect the red LED (D1) to a digital pin (e.g., D3) on the Arduino and the green LED (D2) to another digital pin (e.g., D4).
-   - Attach the piezo buzzer (PIEZO1) to a digital pin (e.g., D5) on the Arduino.
-   - Power the Arduino using a USB cable or an appropriate power source.
-
-2. Software Installation and Code Uploading:
-   - Install the Arduino IDE on your computer if not already installed.
-   - Connect the Arduino to your computer via USB and open the Arduino IDE.
-   - Download and load the code for the Fire Sensor Alarm project onto the Arduino.
-   - Ensure that you have the necessary libraries installed for working with digital inputs/outputs and controlling the piezo buzzer.
-
-3. Configuration Settings and Parameters:
-   - Open the Arduino code in the IDE and review the code comments to understand its functionality and logic.
-   - Depending on the flame sensor used, there may be a need to adjust threshold values for flame detection. These values can be modified within the code to fine-tune the sensitivity.
-   - If desired, you can modify the pins assigned for the LEDs and piezo buzzer to match your hardware connections.
-
-4. Interpreting Alarm Signals and Response:
-   - When the flame sensor detects a flame, it sends a HIGH signal to the Arduino.
-   - The Arduino, upon receiving the flame detection signal, activates the red LED to indicate a fire alarm.
-   - Additionally, the piezo buzzer is activated, producing an audible alarm sound to alert users of a potential fire hazard.
-   - The green LED remains off under normal conditions.
-   - In response to the alarm, users should take appropriate actions based on their safety protocols, such as evacuating the area, notifying authorities, or addressing the source of the flame.
-
-5. Testing and Monitoring:
-   - Test the Fire Sensor Alarm project by introducing a controlled flame source near the flame sensor.
-   - Observe the behaviour of the LEDs and the piezo buzzer when a flame is detected.
-   - Monitor the system's responsiveness and accuracy in detecting flame incidents.
-   - Regularly check and maintain the system to ensure its proper functioning and reliability.
-
-By following these steps, you can set up, operate, and monitor the Fire Sensor Alarm project. This project serves as an early warning system, providing visual and audible alerts to help detect and respond to potential fire incidents promptly.
 
 ## Contributing
 
